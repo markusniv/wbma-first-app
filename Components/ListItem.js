@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 
 const ListItem = ({ singleMedia }) => {
   const url = "https://media.mw.metropolia.fi/wbma/uploads/";
-  console.log(singleMedia.thumbnails.w160);
   return (
     <TouchableOpacity style={styles.card}>
       <Image
