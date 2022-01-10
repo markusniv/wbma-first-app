@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     padding: 10,
-    margin: 3,
+    margin: 2,
     backgroundColor: "lightgray",
   },
 });
