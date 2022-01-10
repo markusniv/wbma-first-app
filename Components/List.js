@@ -4,15 +4,21 @@ import ListItem from "./ListItem";
 
 const List = () => {
   const [mediaArray, setMediaArray] = useState({ hits: [] });
-  const url =
-    "https://raw.githubusercontent.com/mattpe/wbma/master/docs/assets/test.json";
+  const url = "https://media.mw.metropolia.fi/wbma/media/";
   useEffect(() => {
     const loadMedia = async () => {
       try {
         const response = await fetch(url);
-        const json = await response.json();
+        const array = await response.json();
+        const json = await Promise.all(
+          array.map(async (item) => {
+            const response = await fetch(url + item.file_id);
+            const json = await response.json();
+            console.log(json);
+            return json;
+          })
+        );
         setMediaArray(json);
-        console.log(json);
       } catch (e) {
         console.error(e);
       }

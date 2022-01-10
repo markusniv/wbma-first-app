@@ -3,11 +3,15 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const ListItem = ({ singleMedia }) => {
+  const url = "https://media.mw.metropolia.fi/wbma/uploads/";
+  console.log(singleMedia.thumbnails.w160);
   return (
     <TouchableOpacity style={styles.card}>
       <Image
-        style={{ width: 150, height: 220 }}
-        source={{ uri: singleMedia.thumbnails.w160 }}
+        style={{ width: 160, height: 160 }}
+        source={{
+          uri: `${url}${singleMedia.thumbnails.w160}`,
+        }}
       />
       <View style={{ flex: 1 }}>
         <Text style={{ fontWeight: "bold", padding: 5 }}>
