@@ -3,36 +3,33 @@ import {
   StyleSheet,
   View,
   Text,
-  Button,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {MainContext} from '../Contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useUser} from '../hooks/ApiHooks';
+import LoginForm from '../Components/LoginForm';
+import RegisterForm from '../Components/RegisterForm';
 
 const Login = ({navigation}) => { // props is needed for navigation
-  const [isLoggedIn, setIsLoggedIn] = useContext(MainContext);
-  console.log('login isLoggedIn', isLoggedIn);
-
-  const logIn = async () => {
-    setIsLoggedIn(true);
-    try {
-      await AsyncStorage.setItem('userToken', 'abc');
-      navigation.navigate('Tabs');
-    } catch (e) {
-      console.log(e);
-    }
-
-  }
+  const {setUser, isLoggedIn, setIsLoggedIn} = useContext(MainContext);
 
   const checkToken = async () => {
+    const {getUserByToken} = useUser();
     try {
       const token = await AsyncStorage.getItem('userToken');
-      if (token === 'abc') {
-        setIsLoggedIn(true);
-        navigation.navigate('Tabs');
+      const user = await getUserByToken(token);
+      if (!user) {
+        return new Error('Failed to log in!');
       }
+      setUser(user);
+      setIsLoggedIn(true);
+      navigation.navigate('Tabs');
     } catch (e) {
-      console.log(e);
+      return new Error(e.message);
     }
   }
 
@@ -41,19 +38,31 @@ const Login = ({navigation}) => { // props is needed for navigation
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text>Login</Text>
-      <Button title="Sign in!" onPress={logIn} />
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.keyboard}>
+      <TouchableOpacity onPress={Keyboard.dismiss} style={{flex: 1}} activeOpacity={1}>
+        <View style={styles.container}>
+          <Text>Login</Text>
+          <LoginForm navigation={navigation} />
+          <Text style={{marginTop: 10}} >Register</Text>
+          <RegisterForm></RegisterForm>
+        </View>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  keyboard: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  container: {
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    textAlign: 'center',
   },
 });
 
