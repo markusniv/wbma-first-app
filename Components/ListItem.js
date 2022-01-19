@@ -30,6 +30,7 @@ const ListItem = ({singleMedia, navigation}) => {
 
 ListItem.propTypes = {
   singleMedia: PropTypes.object,
+  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({

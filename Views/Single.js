@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, SafeAreaView, Text, Image} from 'react-native';
+import PropTypes from 'prop-types';
 
 const Single = ({route}) => {
   const url = "https://media.mw.metropolia.fi/wbma/uploads/";
@@ -27,5 +28,9 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
 });
+
+Single.propTypes = {
+  route: PropTypes.object,
+}
 
 export default Single;
