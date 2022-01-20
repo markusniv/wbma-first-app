@@ -9,6 +9,7 @@ const List = ({navigation}) => {
 
   return (
     <FlatList
+      style={{backgroundColor: "white"}}
       data={mediaArray}
       keyExtractor={(item, index) => index.toString()}
       renderItem={

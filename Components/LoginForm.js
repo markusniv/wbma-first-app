@@ -1,5 +1,6 @@
 import React, {useContext} from "react";
 import {Text, View, TextInput, Button, StyleSheet} from "react-native";
+import {Input} from "react-native-elements";
 import {MainContext} from '../Contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useForm, Controller} from "react-hook-form";
@@ -46,8 +47,8 @@ const LoginForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
-            style={styles.text}
+          <Input
+            containerStyle={{width: 300}}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -64,9 +65,9 @@ const LoginForm = () => {
           required: true,
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          <Input
+            containerStyle={{width: 300}}
             secureTextEntry={true}
-            style={styles.text}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -81,15 +82,6 @@ const LoginForm = () => {
   );
 }
 
-const styles = StyleSheet.create({
-  text: {
-    borderWidth: 1,
-    padding: 5,
-    margin: 5,
-    textAlign: 'center',
-    width: 200,
-  },
-});
 
 
 export default LoginForm;

@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import {MainContext} from '../Contexts/MainContext';
 
 const apiUrl = "https://media.mw.metropolia.fi/wbma/";
 
@@ -29,6 +30,31 @@ const useMedia = () => {
   }, []);
   return {mediaArray};
 };
+
+const useAvatar = () => {
+
+  const getAvatar = async (user) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const uri = `${apiUrl}tags/avatar_${user.user_id}`;
+
+      const response = await fetch(uri, options);
+      const json = await response.json();
+
+      const src = `${apiUrl}uploads/${json[0].filename}`;
+
+      return src;
+    } catch (e) {
+      return new Error(e.message);
+    }
+  }
+  return {getAvatar};
+}
 
 const useLogin = () => {
 
@@ -100,4 +126,4 @@ const useUser = () => {
   return {getUserByToken, postUser};
 }
 
-export {useMedia, useLogin, useUser};
+export {useMedia, useLogin, useUser, useAvatar};
