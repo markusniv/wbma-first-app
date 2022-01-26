@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -16,6 +16,7 @@ import RegisterForm from '../Components/RegisterForm';
 
 const Login = ({navigation}) => { // props is needed for navigation
   const {setUser, isLoggedIn, setIsLoggedIn} = useContext(MainContext);
+  const [register, setRegister] = useState(false);
 
   const checkToken = async () => {
     const {getUserByToken} = useUser();
@@ -43,10 +44,35 @@ const Login = ({navigation}) => { // props is needed for navigation
       style={styles.keyboard}>
       <TouchableOpacity onPress={Keyboard.dismiss} style={{flex: 1}} activeOpacity={1}>
         <View style={styles.container}>
-          <Text>Login</Text>
-          <LoginForm navigation={navigation} />
-          <Text style={{marginTop: 10}} >Register</Text>
-          <RegisterForm></RegisterForm>
+
+          {register ? (
+            <>
+              <Text style={{marginTop: 10}} >Register</Text>
+              <RegisterForm></RegisterForm>
+              <Text
+                style={{
+                  marginTop: 10,
+                  color: '#2596be'
+                }} onPress={() =>
+                  setRegister(false)
+                }>Back to login
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text>Login</Text>
+              <LoginForm navigation={navigation} />
+              <Text
+                style={{
+                  marginTop: 10,
+                  color: '#2596be'
+                }} onPress={() =>
+                  setRegister(true)
+                }>No account yet?
+              </Text>
+            </>
+          )}
+
         </View>
       </TouchableOpacity>
     </KeyboardAvoidingView>
