@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
-import {Text, View, TextInput, Button, StyleSheet} from "react-native";
-import {Input} from "react-native-elements";
+import {Text, View} from "react-native";
+import {Input, Button, } from "react-native-elements";
 import {MainContext} from '../Contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useForm, Controller} from "react-hook-form";

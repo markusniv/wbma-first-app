@@ -1,10 +1,8 @@
 import React, {useContext} from "react";
-import {Text, View, TextInput, Button, StyleSheet} from "react-native";
-import {MainContext} from '../Contexts/MainContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {View} from "react-native";
 import {useForm, Controller} from "react-hook-form";
 import {useUser} from '../hooks/ApiHooks';
-import {Input} from "react-native-elements";
+import {Input, Button, } from "react-native-elements";
 
 const RegisterForm = ({setRegister}) => {
   const {control, handleSubmit, getValues, formState: {errors}} = useForm({

@@ -1,16 +1,19 @@
 import {useEffect, useState} from "react";
-import {MainContext} from '../Contexts/MainContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import data from '../global/tag.json'
 
 const apiUrl = "https://media.mw.metropolia.fi/wbma/";
+const tag = data.tag;
 
-const useMedia = () => {
+const useMedia = (update) => {
 
   const [mediaArray, setMediaArray] = useState({hits: []});
 
   const useMedia = async () => {
     const url = apiUrl + "media/";
     try {
-      const response = await fetch(url);
+      const response = await fetch(`${apiUrl}tags/${tag}`);
       const array = await response.json();
       const json = await Promise.all(
         array.map(async (item) => {
@@ -25,11 +28,58 @@ const useMedia = () => {
     }
   };
 
+  const postMedia = async (data) => {
+    const token = await AsyncStorage.getItem('userToken');
+    const options = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+      },
+      body: data,
+    };
+
+    try {
+      const response = await fetch(apiUrl + "media/", options);
+      if (!response.ok) {
+        return new Error('Failed to upload data!');
+      }
+      console.log("Succesfully uploaded, now adding tag...");
+
+      const json = await response.json();
+
+      const tBody = {
+        file_id: json.file_id,
+        tag: tag,
+      };
+
+      const tOptions = {
+        method: 'POST',
+        headers: {
+          'x-access-token': token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(tBody)
+      };
+
+      const tResponse = await fetch(apiUrl + "tags", tOptions);
+      if (!tResponse.ok) {
+        return new Error('Failed to create a tag!');
+      }
+      const tJson = tResponse.json();
+
+      return tJson;
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  };
+
   useEffect(async () => {
     await useMedia();
-  }, []);
-  return {mediaArray};
+  }, [update]);
+  return {mediaArray, postMedia};
 };
+
+
 
 const useAvatar = () => {
 

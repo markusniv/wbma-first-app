@@ -6,6 +6,7 @@ import Home from '../Views/Home';
 import Profile from '../Views/Profile';
 import Single from '../Views/Single';
 import Login from '../Views/Login';
+import Upload from '../Views/Upload';
 import {MainContext} from '../Contexts/MainContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -33,6 +34,16 @@ const TabScreen = () => {
           tabBarLabel: "Profile",
           tabBarIcon: ({color}) => (
             <MaterialCommunityIcons name="account" color={color} size={26} />
+          )
+        }}
+      />
+      <Tab.Screen
+        name="Upload"
+        component={Upload}
+        options={{
+          tabBarLabel: "Upload",
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons name="upload" color={color} size={26} />
           )
         }}
       />
