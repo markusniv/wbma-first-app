@@ -48,7 +48,7 @@ const Login = ({navigation}) => { // props is needed for navigation
           {register ? (
             <>
               <Text style={{marginTop: 10}} >Register</Text>
-              <RegisterForm></RegisterForm>
+              <RegisterForm setRegister={setRegister}></RegisterForm>
               <Text
                 style={{
                   marginTop: 10,

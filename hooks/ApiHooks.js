@@ -123,7 +123,28 @@ const useUser = () => {
     }
   }
 
-  return {getUserByToken, postUser};
+  const checkUser = async (username) => {
+    try {
+      const options = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const response = await fetch(apiUrl + 'users/username/' + username, options);
+      const userData = await response.json();
+      if (response.ok) {
+        console.log(userData);
+        return userData.available;
+      } else {
+        throw new Error(userData.message);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  return {getUserByToken, postUser, checkUser};
 }
 
 export {useMedia, useLogin, useUser, useAvatar};
