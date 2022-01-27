@@ -140,7 +140,7 @@ const useUser = () => {
         headers: {'x-access-token': token},
       };
       const response = await fetch(apiUrl + 'users/user', options);
-      const userData = response.json();
+      const userData = await response.json();
       if (response.ok) {
         return userData;
       } else {
@@ -150,6 +150,25 @@ const useUser = () => {
       throw new Error(error.message);
     }
   };
+
+  const getUserById = async (id) => {
+    const token = await AsyncStorage.getItem('userToken');
+    try {
+      const options = {
+        method: 'GET',
+        headers: {'x-access-token': token},
+      };
+      const response = await fetch(apiUrl + 'users/' + id, options);
+      const userData = await response.json();
+      if (response.ok) {
+        return userData.username;
+      } else {
+        throw new Error(userData.message);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 
   const postUser = async (data) => {
     console.log(data);
@@ -194,7 +213,7 @@ const useUser = () => {
     }
   }
 
-  return {getUserByToken, postUser, checkUser};
+  return {getUserByToken, postUser, checkUser, getUserById};
 }
 
 export {useMedia, useLogin, useUser, useAvatar};
