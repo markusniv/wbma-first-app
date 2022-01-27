@@ -4,9 +4,10 @@ import List from "../Components/List";
 import PropTypes from "prop-types";
 
 const Home = ({navigation}) => {
+  const tab = "Home"
   return (
     <SafeAreaView>
-      <List navigation={navigation} />
+      <List navigation={navigation} tab={tab} />
     </SafeAreaView>
   );
 };

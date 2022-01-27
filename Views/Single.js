@@ -14,9 +14,7 @@ const Single = ({route}) => {
   const {media} = route.params;
   const singleMedia = media.singleMedia;
   const [user, setUser] = useState(singleMedia.user_id);
-  console.log(singleMedia);
   const fileType = singleMedia.mime_type.split('/').shift();
-  console.log("file type is : " + fileType);
 
   const getUser = async () => {
     const userName = await getUserById(singleMedia.user_id);

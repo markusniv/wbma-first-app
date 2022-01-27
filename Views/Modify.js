@@ -4,22 +4,22 @@ import {Button, Image, Input} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {useForm, Controller} from 'react-hook-form';
 import {useMedia} from '../hooks/ApiHooks';
-import * as ImagePicker from 'expo-image-picker';
 import {MainContext} from '../Contexts/MainContext';
 import {useFocusEffect} from '@react-navigation/native';
 
-const Upload = ({navigation}) => {
+const Modify = ({navigation, route}) => {
+  const url = 'https://media.mw.metropolia.fi/wbma/uploads/';
+  const {media} = route.params;
+  const singleMedia = media.singleMedia;
+
   const [activated, setActivated] = useState({
     title: false,
     description: false,
-    file: false,
   });
-  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState({});
 
   const {update, setUpdate} = useContext(MainContext);
-  const {postMedia} = useMedia();
+  const {putMedia} = useMedia();
   const {control, handleSubmit, getValues, formState: {errors}} = useForm({
     mode: 'onBlur',
   });
@@ -30,75 +30,26 @@ const Upload = ({navigation}) => {
   useFocusEffect(React.useCallback(() => reset(), []));
 
   const onSubmit = async (data) => {
-    if (!file.uri) {
-      Alert.alert(
-        "Error!",
-        "Please select an image!",
-        [
-          {
-            text: "Ok",
-          }
-        ]
-      )
-      return;
-    }
-    const formData = new FormData();
-
-    formData.append("title", data.title);
-    if (data.description) formData.append("description", data.description);
-    formData.append("file", {
-      uri: file.uri,
-      name: file.fileName,
-      type: file.mimeType,
-    })
     setLoading(true);
-    const upload = await postMedia(formData);
+    const upload = await putMedia(data, singleMedia.file_id);
     if (upload) {
       setUpdate(!update);
       setTimeout(() => {
         setLoading(false);
         reset();
-        navigation.navigate('Home');
+        navigation.navigate('My Files');
       }, 1000);
-    }
-  }
-
-  const selectFile = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      const fileName = result.uri.split('/').pop();
-      let mimeType = fileName.split('.').pop();
-      if (mimeType === 'jpg') mimeType = 'jpeg';
-      setFile({
-        uri: result.uri,
-        fileName: fileName,
-        mimeType: `${result.type}/${mimeType}`,
-      })
-      setImage(result.uri);
-      setActivated({
-        title: activated.title,
-        description: activated.description,
-        file: true,
-      })
     }
   }
 
   const reset = () => {
     setTitleInput('');
     setDescriptionInput('');
-    setImage(null);
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {image && <Image source={{uri: image}} containerStyle={{width: 200, height: 200}} />}
-      <Button title="Select file..." onPress={selectFile} />
+      <Image source={{uri: `${url}${singleMedia.filename}`}} containerStyle={{width: 200, height: 200}} />
       <Controller
         control={control}
         rules={{
@@ -113,13 +64,11 @@ const Upload = ({navigation}) => {
               setActivated({
                 title: true,
                 description: activated.description,
-                file: activated.file,
               })
             } else {
               setActivated({
                 title: false,
                 description: activated.description,
-                file: activated.file,
               })
             }
           }
@@ -151,13 +100,11 @@ const Upload = ({navigation}) => {
               setActivated({
                 title: activated.title,
                 description: true,
-                file: activated.file,
               })
             } else {
               setActivated({
                 title: activated.title,
                 description: false,
-                file: activated.file,
               })
             }
           }
@@ -179,7 +126,7 @@ const Upload = ({navigation}) => {
         title="Upload"
         loading={loading}
         onPress={handleSubmit(onSubmit)}
-        disabled={!(activated.title && activated.description && activated.file)}
+        disabled={!(activated.title && activated.description)}
       />
       <Button
         title="Reset"
@@ -199,8 +146,8 @@ const styles = StyleSheet.create({
   },
 });
 
-Upload.propTypes = {
+Modify.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default Upload;
+export default Modify;

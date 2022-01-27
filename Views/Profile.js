@@ -30,7 +30,6 @@ const Profile = ({navigation}) => {
 
   useEffect(() => {
     loadAvatar();
-    console.log(avatar);
   }, [])
 
   return (

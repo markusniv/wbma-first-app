@@ -25,7 +25,6 @@ const LoginForm = () => {
       if (!response) {
         return new Error('Failed to retrieve data!');
       }
-      console.log(response);
       try {
         await AsyncStorage.setItem('userToken', response.token);
         setUser(response.user);

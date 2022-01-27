@@ -9,6 +9,7 @@ const tag = data.tag;
 const useMedia = (update) => {
 
   const [mediaArray, setMediaArray] = useState({hits: []});
+  const [userMediaArray, setUserMediaArray] = useState({hits: []});
 
   const useMedia = async () => {
     const url = apiUrl + "media/";
@@ -27,6 +28,34 @@ const useMedia = (update) => {
       throw new Error(e.message);
     }
   };
+
+  const useMyMedia = async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    const url = apiUrl + "media/";
+
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}media/user`, options);
+      const array = await response.json();
+      const json = await Promise.all(
+        array.map(async (item) => {
+          const response = await fetch(url + item.file_id);
+          const json = await response.json();
+          return json;
+        })
+      );
+
+      setUserMediaArray(json);
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
 
   const postMedia = async (data) => {
     const token = await AsyncStorage.getItem('userToken');
@@ -65,7 +94,7 @@ const useMedia = (update) => {
       if (!tResponse.ok) {
         return new Error('Failed to create a tag!');
       }
-      const tJson = tResponse.json();
+      const tJson = await tResponse.json();
 
       return tJson;
     } catch (e) {
@@ -73,10 +102,58 @@ const useMedia = (update) => {
     }
   };
 
+  const deleteMedia = async (id) => {
+    const token = await AsyncStorage.getItem('userToken');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    try {
+      const response = await fetch(apiUrl + "media/" + id, options);
+      if (!response.ok) {
+        return new Error('Failed to delete a post!');
+      }
+      const json = response.json();
+      return json;
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
+
+  const putMedia = async (data, id) => {
+    const token = await AsyncStorage.getItem('userToken');
+    console.log(data);
+    const options = {
+      method: 'PUT',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+
+    try {
+      const response = await fetch(apiUrl + "media/" + id, options);
+      console.log(response);
+      if (!response.ok) {
+        return new Error('Failed to modify data!');
+      }
+
+      const json = await response.json();
+
+      return json;
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  };
+
   useEffect(async () => {
     await useMedia();
+    await useMyMedia();
   }, [update]);
-  return {mediaArray, postMedia};
+  return {mediaArray, userMediaArray, postMedia, deleteMedia, putMedia};
 };
 
 
@@ -203,7 +280,6 @@ const useUser = () => {
       const response = await fetch(apiUrl + 'users/username/' + username, options);
       const userData = await response.json();
       if (response.ok) {
-        console.log(userData);
         return userData.available;
       } else {
         throw new Error(userData.message);

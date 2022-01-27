@@ -7,8 +7,10 @@ import Profile from '../Views/Profile';
 import Single from '../Views/Single';
 import Login from '../Views/Login';
 import Upload from '../Views/Upload';
+import MyFiles from '../Views/MyFiles';
 import {MainContext} from '../Contexts/MainContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Modify from '../Views/Modify';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,6 +36,16 @@ const TabScreen = () => {
           tabBarLabel: "Profile",
           tabBarIcon: ({color}) => (
             <MaterialCommunityIcons name="account" color={color} size={26} />
+          )
+        }}
+      />
+      <Tab.Screen
+        name="My Files"
+        component={MyFiles}
+        options={{
+          tabBarLabel: "My Files",
+          tabBarIcon: ({color}) => (
+            <MaterialCommunityIcons name="folder" color={color} size={26} />
           )
         }}
       />
@@ -68,6 +80,10 @@ const StackScreen = () => {
           <Stack.Screen
             name="Single"
             component={Single}
+          />
+          <Stack.Screen
+            name="Modify"
+            component={Modify}
           />
         </>
       ) : (
